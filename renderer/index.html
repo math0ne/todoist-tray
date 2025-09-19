@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Minimal Todoist</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="main-content">
+            <button id="add-toggle-btn" class="add-toggle-btn">+</button>
+
+            <div class="add-todo-section" id="add-todo-section">
+                <input type="text" id="new-todo-input" placeholder="Add a new todo..." />
+                <button id="close-add-btn" class="close-add-btn">×</button>
+            </div>
+
+            <div class="todos-section">
+                <div id="loading" class="loading">Loading todos...</div>
+                <div id="error" class="error" style="display: none;"></div>
+                <ul id="todos-list" class="todos-list"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>

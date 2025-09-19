@@ -1,0 +1,9 @@
+Since we can't generate the actual PNG icon in this environment, you'll need to create a 16x16 pixel PNG icon file named "tray-icon.png" in the assets folder.
+
+You can:
+1. Create a simple red square with a white "T" in the center
+2. Use any icon editor or even MS Paint
+3. Download a Todoist-style icon from icon websites
+4. The icon should be 16x16 pixels for best system tray display
+
+Place the icon at: assets/tray-icon.png
