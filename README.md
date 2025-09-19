@@ -2,6 +2,8 @@
 
 A minimal Windows system tray application for Todoist using Electron. Click the tray icon to see your latest todos and add new ones quickly.
 
+![Screenshot](screenshots/main.png)
+
 ## Features
 
 - System tray integration with click-to-show popup
@@ -29,11 +31,7 @@ A minimal Windows system tray application for Todoist using Electron. Click the 
    # Edit config.json and replace "your_todoist_api_token_here" with your actual token
    ```
 
-4. **Create tray icon:**
-   - Create a 16x16 pixel PNG icon named `tray-icon.png` in the `assets/` folder
-   - You can use any simple icon - a red square with white "T" works well
-
-5. **Run the app:**
+4. **Run the app:**
    ```bash
    npm start
    ```

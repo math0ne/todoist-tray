@@ -6,6 +6,8 @@
   "scripts": {
     "start": "electron .",
     "build": "electron-builder",
+    "build-portable": "electron-builder --win portable",
+    "build-installer": "electron-builder --win nsis",
     "dist": "electron-builder --publish=never"
   },
   "keywords": ["electron", "todoist", "system-tray"],
@@ -25,7 +27,16 @@
       "output": "dist"
     },
     "win": {
-      "target": "nsis",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
       "icon": "assets/icon.ico"
     },
     "nsis": {

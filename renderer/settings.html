@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Settings - Minimal Todoist</title>
+    <link rel="stylesheet" href="settings.css">
+</head>
+<body>
+    <div class="settings-container">
+        <div class="header">
+            <h2>Settings</h2>
+            <button id="close-btn" class="close-btn">×</button>
+        </div>
+
+        <div class="content">
+            <div class="field-group">
+                <label for="api-key">Todoist API Token:</label>
+                <input type="password" id="api-key" placeholder="Enter your Todoist API token">
+                <button id="toggle-visibility" class="toggle-btn">👁</button>
+            </div>
+
+            <div class="actions">
+                <button id="save-btn" class="save-btn">Save</button>
+                <button id="cancel-btn" class="cancel-btn">Cancel</button>
+            </div>
+
+            <div class="help-text">
+                Get your API token from
+                <a href="#" id="open-todoist-settings">Todoist Integrations</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="settings.js"></script>
+</body>
+</html>

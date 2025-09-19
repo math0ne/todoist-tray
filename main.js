@@ -4,6 +4,7 @@ const fs = require('fs');
 
 let tray = null;
 let window = null;
+let settingsWindow = null;
 let config = null;
 let windowVisible = false;
 
@@ -69,6 +70,13 @@ function createTray() {
       }
     },
     {
+      label: 'Settings',
+      click: () => {
+        showSettingsWindow();
+      }
+    },
+    { type: 'separator' },
+    {
       label: 'Quit',
       click: () => {
         app.quit();
@@ -115,6 +123,56 @@ function showWindow() {
     window.show();
     window.focus();
   }
+}
+
+function showSettingsWindow() {
+  if (settingsWindow) {
+    settingsWindow.focus();
+    return;
+  }
+
+  settingsWindow = new BrowserWindow({
+    width: 400,
+    height: 200,
+    show: false,
+    frame: false,
+    alwaysOnTop: true,
+    resizable: false,
+    skipTaskbar: true,
+    parent: window,
+    modal: false,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false
+    }
+  });
+
+  settingsWindow.loadFile('renderer/settings.html');
+
+  settingsWindow.once('ready-to-show', () => {
+    // Center the settings window on screen
+    const primaryDisplay = screen.getPrimaryDisplay();
+    const { width, height } = primaryDisplay.workAreaSize;
+    const windowBounds = settingsWindow.getBounds();
+
+    const x = Math.round((width - windowBounds.width) / 2);
+    const y = Math.round((height - windowBounds.height) / 2);
+
+    settingsWindow.setPosition(x, y);
+    settingsWindow.show();
+  });
+
+  settingsWindow.on('closed', () => {
+    settingsWindow = null;
+  });
+
+  settingsWindow.on('blur', () => {
+    setTimeout(() => {
+      if (settingsWindow && !settingsWindow.isFocused()) {
+        settingsWindow.close();
+      }
+    }, 100);
+  });
 }
 
 app.whenReady().then(() => {
@@ -193,14 +251,22 @@ ipcMain.handle('get-todos', async () => {
       );
 
       if (completedResponse.data.items) {
+        const threeDaysAgo = new Date();
+        threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+
         completedResponse.data.items.forEach(item => {
-          allItems.push({
-            id: item.task_id || item.id, // Use task_id for completed items for uncomplete operation
-            content: item.content,
-            is_completed: true,
-            created_at: item.completed_at,
-            type: 'completed'
-          });
+          const completedDate = new Date(item.completed_at);
+
+          // Only include completed items from the last 3 days
+          if (completedDate >= threeDaysAgo) {
+            allItems.push({
+              id: item.task_id || item.id, // Use task_id for completed items for uncomplete operation
+              content: item.content,
+              is_completed: true,
+              created_at: item.completed_at,
+              type: 'completed'
+            });
+          }
         });
       }
     } catch (completedError) {
@@ -315,6 +381,32 @@ ipcMain.handle('reopen-todo', async (event, taskId) => {
 
 ipcMain.handle('get-theme', () => {
   return nativeTheme.shouldUseDarkColors;
+});
+
+ipcMain.handle('get-api-key', () => {
+  return config?.todoistApiToken || '';
+});
+
+ipcMain.handle('save-api-key', (event, apiKey) => {
+  try {
+    const configPath = path.join(__dirname, 'config.json');
+
+    // Create config object
+    const newConfig = {
+      todoistApiToken: apiKey
+    };
+
+    // Write to file
+    fs.writeFileSync(configPath, JSON.stringify(newConfig, null, 2));
+
+    // Update in-memory config
+    config = newConfig;
+
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to save API key:', error);
+    return { success: false, error: error.message };
+  }
 });
 
 ipcMain.handle('resize-window', (event, todoCount) => {

@@ -1,0 +1,288 @@
+* {
+    box-sizing: border-box;
+}
+
+*:not(body):not(html) {
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #1e1e1e;
+    color: #ffffff;
+    font-size: 13px;
+    user-select: none;
+    transition: background-color 0.2s, color 0.2s;
+    overflow: hidden;
+}
+
+button {
+    outline: none;
+    border: none;
+}
+
+button:focus {
+    outline: none;
+}
+
+.settings-container {
+    width: 400px;
+    height: 200px;
+    overflow: hidden;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    background: #1e1e1e;
+    transition: background-color 0.2s, border-color 0.2s;
+    position: relative;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px 12px 20px;
+    border-bottom: 1px solid #333;
+    background: #2d2d2d;
+}
+
+.header h2 {
+    font-size: 16px;
+    font-weight: 500;
+    color: #ffffff;
+    margin: 0;
+}
+
+.close-btn {
+    background: none;
+    border: 1px solid #666;
+    color: #ffffff;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.close-btn:hover {
+    background: #555;
+    border-color: #888;
+}
+
+.content {
+    padding: 20px;
+}
+
+.field-group {
+    margin-bottom: 16px;
+    position: relative;
+}
+
+.field-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #ffffff;
+    font-weight: 500;
+}
+
+.field-group input {
+    width: 100%;
+    padding: 8px 40px 8px 12px;
+    border: 1px solid #555;
+    border-radius: 4px;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+    background: #3c3c3c;
+    color: #ffffff;
+}
+
+.field-group input:focus {
+    border-color: #888;
+}
+
+.field-group input::placeholder {
+    color: #aaa;
+    transition: color 0.2s;
+}
+
+.toggle-btn {
+    position: absolute;
+    right: 8px;
+    top: 32px;
+    background: none;
+    border: none;
+    color: #aaa;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 4px;
+    transition: color 0.2s;
+}
+
+.toggle-btn:hover {
+    color: #ffffff;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.save-btn, .cancel-btn {
+    flex: 1;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.save-btn {
+    background: #666;
+    border: none;
+    color: white;
+}
+
+.save-btn:hover {
+    background: #777;
+}
+
+.save-btn:disabled {
+    background: #555;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.cancel-btn {
+    background: none;
+    border: 1px solid #666;
+    color: #ffffff;
+}
+
+.cancel-btn:hover {
+    background: #555;
+    border-color: #888;
+}
+
+.help-text {
+    font-size: 12px;
+    color: #aaa;
+    text-align: center;
+}
+
+.help-text a {
+    color: #888;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.help-text a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+/* Light theme styles */
+.light-theme {
+    background: #ffffff !important;
+    color: #333;
+}
+
+html.light-theme,
+body.light-theme {
+    background: #ffffff !important;
+}
+
+.light-theme .settings-container {
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background: #ffffff;
+}
+
+.light-theme .header {
+    background: #f8f8f8;
+    border-bottom-color: #e0e0e0;
+}
+
+.light-theme .header h2 {
+    color: #333;
+}
+
+.light-theme .close-btn {
+    border-color: #ccc;
+    color: #333;
+}
+
+.light-theme .close-btn:hover {
+    background: #f0f0f0;
+    border-color: #999;
+}
+
+.light-theme .field-group label {
+    color: #333;
+}
+
+.light-theme .field-group input {
+    background: #ffffff;
+    border-color: #ddd;
+    color: #333;
+}
+
+.light-theme .field-group input::placeholder {
+    color: #999;
+}
+
+.light-theme .field-group input:focus {
+    border-color: #999;
+}
+
+.light-theme .toggle-btn {
+    color: #666;
+}
+
+.light-theme .toggle-btn:hover {
+    color: #333;
+}
+
+.light-theme .save-btn {
+    background: #007acc;
+}
+
+.light-theme .save-btn:hover {
+    background: #005a9e;
+}
+
+.light-theme .save-btn:disabled {
+    background: #ccc;
+}
+
+.light-theme .cancel-btn {
+    border-color: #ccc;
+    color: #333;
+}
+
+.light-theme .cancel-btn:hover {
+    background: #f0f0f0;
+    border-color: #999;
+}
+
+.light-theme .help-text {
+    color: #666;
+}
+
+.light-theme .help-text a {
+    color: #007acc;
+}
+
+.light-theme .help-text a:hover {
+    color: #005a9e;
+}

@@ -52,5 +52,5 @@ renderer/
 ├── styles.css       # Styling
 └── renderer.js      # Frontend logic
 assets/
-└── tray-icon.png    # System tray icon (16x16 PNG)
+└── tray-icon.png    # System tray icon (32x32 PNG)
 ```
