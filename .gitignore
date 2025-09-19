@@ -17,6 +17,9 @@ config.json
 .env.test.local
 .env.production.local
 
+# Development documentation
+CLAUDE.md
+
 # Operating System
 .DS_Store
 .DS_Store?
