@@ -59,8 +59,11 @@ function createWindow() {
 }
 
 function createTray() {
-  const iconPath = path.join(__dirname, 'assets', 'tray-icon.png');
+  const iconPath = path.join(__dirname, 'assets', 'tray-icon.ico');
   tray = new Tray(iconPath);
+
+  // Try to set the icon explicitly for better rendering
+  tray.setImage(iconPath);
 
   const contextMenu = Menu.buildFromTemplate([
     {
@@ -207,11 +210,11 @@ ipcMain.handle('get-todos', async () => {
   }
 
   try {
-    // Get active items
+    // Get active items and projects
     const activeResponse = await axios.post('https://api.todoist.com/sync/v9/sync',
       new URLSearchParams({
         sync_token: '*',
-        resource_types: '["items"]'
+        resource_types: '["items", "projects"]'
       }), {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -222,6 +225,16 @@ ipcMain.handle('get-todos', async () => {
 
     const allItems = [];
 
+    // Create project lookup map
+    const projects = {};
+    if (activeResponse.data.projects) {
+      activeResponse.data.projects.forEach(project => {
+        if (!project.is_deleted) {
+          projects[project.id] = project.name;
+        }
+      });
+    }
+
     // Process active items
     if (activeResponse.data.items) {
       activeResponse.data.items.forEach(item => {
@@ -231,7 +244,8 @@ ipcMain.handle('get-todos', async () => {
             content: item.content,
             is_completed: false,
             created_at: item.added_at || item.date_added,
-            type: 'active'
+            type: 'active',
+            project_name: projects[item.project_id] || 'Inbox'
           });
         }
       });
@@ -264,7 +278,8 @@ ipcMain.handle('get-todos', async () => {
               content: item.content,
               is_completed: true,
               created_at: item.completed_at,
-              type: 'completed'
+              type: 'completed',
+              project_name: projects[item.project_id] || 'Inbox'
             });
           }
         });
@@ -409,16 +424,34 @@ ipcMain.handle('save-api-key', (event, apiKey) => {
   }
 });
 
-ipcMain.handle('resize-window', (event, todoCount) => {
+ipcMain.handle('resize-window', (event, data) => {
   if (window && tray) {
+    // Handle both old format (just count) and new format (object)
+    const todoCount = typeof data === 'number' ? data : data.count;
+    const todos = typeof data === 'object' && data.todos ? data.todos : [];
+
     // Base height for window chrome and padding
     const baseHeight = 45;
     // Height per todo item (approximately)
     const itemHeight = 24;
-    // Minimum height
+    // Minimum and maximum dimensions
     const minHeight = 80;
-    // Maximum height
     const maxHeight = 600;
+    const minWidth = 300;
+    const maxWidth = 800; // Increased max width
+
+    // Calculate optimal width based on todo content
+    let calculatedWidth = minWidth;
+    if (todos.length > 0) {
+      // Find the longest todo content
+      const maxLength = Math.max(...todos.map(todo => todo.length));
+
+      // Calculate width based on character count
+      // ~9 pixels per character (more generous for readability) + padding
+      // This accounts for: checkbox (16px) + gap (8px) + right margin (32px) + left padding (20px) + buffer (24px)
+      const contentWidth = Math.max(minWidth, (maxLength * 9) + 100);
+      calculatedWidth = Math.min(contentWidth, maxWidth);
+    }
 
     const calculatedHeight = Math.min(
       Math.max(baseHeight + (todoCount * itemHeight), minHeight),
@@ -431,13 +464,13 @@ ipcMain.handle('resize-window', (event, todoCount) => {
     const primaryDisplay = screen.getPrimaryDisplay();
     const workArea = primaryDisplay.workArea;
 
-    // Calculate new position based on tray location and new height
-    let x = Math.round(trayBounds.x + (trayBounds.width / 2) - (currentBounds.width / 2));
+    // Calculate new position based on tray location and new dimensions
+    let x = Math.round(trayBounds.x + (trayBounds.width / 2) - (calculatedWidth / 2));
     let y = Math.round(trayBounds.y - calculatedHeight - 10);
 
     // Ensure window stays within screen bounds
-    if (x + currentBounds.width > workArea.x + workArea.width) {
-      x = workArea.x + workArea.width - currentBounds.width;
+    if (x + calculatedWidth > workArea.x + workArea.width) {
+      x = workArea.x + workArea.width - calculatedWidth;
     }
     if (x < workArea.x) {
       x = workArea.x;
@@ -450,7 +483,7 @@ ipcMain.handle('resize-window', (event, todoCount) => {
     window.setBounds({
       x: x,
       y: y,
-      width: currentBounds.width,
+      width: calculatedWidth,
       height: calculatedHeight
     });
   }

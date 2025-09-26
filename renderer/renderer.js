@@ -55,6 +55,7 @@ function updateTodoState(todos, isInitialLoad = false) {
         hasChanges = true;
     }
 
+
     // Process incoming todos
     todos.forEach(todo => {
         const normalizedTodo = {
@@ -63,6 +64,7 @@ function updateTodoState(todos, isInitialLoad = false) {
             is_completed: todo.is_completed || false,
             created_at: todo.created_at,
             type: todo.type,
+            project_name: todo.project_name,
             syncing: false // Don't override syncing state for existing items
         };
 
@@ -166,7 +168,7 @@ function renderTodosFromState() {
 
     if (todos.length === 0) {
         elements.todosList.innerHTML = '<div class="no-todos">No todos found</div>';
-        ipcRenderer.invoke('resize-window', 0);
+        ipcRenderer.invoke('resize-window', { count: 0, todos: [] });
         return;
     }
 
@@ -182,16 +184,25 @@ function renderTodosFromState() {
 
     elements.todosList.innerHTML = sortedTodos.map(todo => {
         const syncingClass = todo.syncing ? ' syncing' : '';
+        const projectPrefix = (todo.project_name && todo.project_name !== 'Inbox') ? `<span class="project-name">#${escapeHtml(todo.project_name)}</span>` : '';
         return `
             <li class="todo-item ${todo.is_completed ? 'completed' : ''}${syncingClass}" data-id="${todo.id}">
                 <button class="todo-checkbox" data-id="${todo.id}" ${todo.syncing ? 'disabled' : ''}>✓</button>
-                <div class="todo-content">${escapeHtml(todo.content)}</div>
+                <div class="todo-content">${projectPrefix}${escapeHtml(todo.content)}</div>
             </li>
         `;
     }).join('');
 
-    // Resize window based on number of todos
-    ipcRenderer.invoke('resize-window', todos.length);
+    // Resize window based on todos content
+    const todosData = todos.map(todo => {
+        const projectPrefix = (todo.project_name && todo.project_name !== 'Inbox') ? `#${todo.project_name} ` : '';
+        const fullContent = projectPrefix + todo.content;
+        return {
+            content: fullContent,
+            length: fullContent.length
+        };
+    });
+    ipcRenderer.invoke('resize-window', { count: todos.length, todos: todosData });
 }
 
 async function loadTodos(silent = false) {
