@@ -28,6 +28,11 @@ jobs:
     - name: Update version from tag
       run: |
         $version = "${{ github.ref_name }}" -replace '^v', ''
+        # Ensure version has at least 3 parts (e.g., 1.6 becomes 1.6.0)
+        $parts = $version -split '\.'
+        if ($parts.Length -eq 2) {
+          $version = "$version.0"
+        }
         npm version $version --no-git-tag-version --allow-same-version
       shell: pwsh
 
