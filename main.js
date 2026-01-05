@@ -11,11 +11,23 @@ let windowVisible = false;
 function loadConfig() {
   try {
     const configPath = path.join(__dirname, 'config.json');
+
+    // Create default config if it doesn't exist
+    if (!fs.existsSync(configPath)) {
+      const defaultConfig = {
+        todoistApiToken: ''
+      };
+      fs.writeFileSync(configPath, JSON.stringify(defaultConfig, null, 2));
+      config = defaultConfig;
+      return;
+    }
+
     const configData = fs.readFileSync(configPath, 'utf8');
     config = JSON.parse(configData);
   } catch (error) {
     console.error('Failed to load config.json:', error.message);
-    config = null;
+    // Fallback to empty config
+    config = { todoistApiToken: '' };
   }
 }
 
@@ -206,7 +218,7 @@ ipcMain.handle('get-todos', async () => {
   const token = config?.todoistApiToken;
 
   if (!token) {
-    return { error: 'Please create config.json with your Todoist API token' };
+    return { error: 'Please configure your API token.\n\nRight-click the tray icon and select Settings to add your Todoist API token.' };
   }
 
   try {
@@ -312,7 +324,7 @@ ipcMain.handle('add-todo', async (event, content) => {
   const token = config?.todoistApiToken;
 
   if (!token) {
-    return { error: 'Please create config.json with your Todoist API token' };
+    return { error: 'Please configure your API token.\n\nRight-click the tray icon and select Settings to add your Todoist API token.' };
   }
 
   try {
@@ -336,7 +348,7 @@ ipcMain.handle('complete-todo', async (event, taskId) => {
   const token = config?.todoistApiToken;
 
   if (!token) {
-    return { error: 'Please create config.json with your Todoist API token' };
+    return { error: 'Please configure your API token.\n\nRight-click the tray icon and select Settings to add your Todoist API token.' };
   }
 
   try {
@@ -368,7 +380,7 @@ ipcMain.handle('reopen-todo', async (event, taskId) => {
   const token = config?.todoistApiToken;
 
   if (!token) {
-    return { error: 'Please create config.json with your Todoist API token' };
+    return { error: 'Please configure your API token.\n\nRight-click the tray icon and select Settings to add your Todoist API token.' };
   }
 
   try {
