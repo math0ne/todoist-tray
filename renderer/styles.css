@@ -165,8 +165,8 @@ button:focus {
 }
 
 .error {
-    color: #888;
-    background: #f5f5f5;
+    color: #ff6b6b;
+    background: transparent;
 }
 
 .todos-list {

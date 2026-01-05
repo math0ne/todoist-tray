@@ -7,7 +7,9 @@
       "WebFetch(domain:developer.todoist.com)",
       "Bash(dir:*)",
       "Bash(git tag:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []
