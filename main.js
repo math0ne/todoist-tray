@@ -8,15 +8,26 @@ let settingsWindow = null;
 let config = null;
 let windowVisible = false;
 
+function getConfigPath() {
+  // Use app.getPath('userData') for a writable location
+  // This works in both development and packaged app
+  return path.join(app.getPath('userData'), 'config.json');
+}
+
 function loadConfig() {
   try {
-    const configPath = path.join(__dirname, 'config.json');
+    const configPath = getConfigPath();
 
     // Create default config if it doesn't exist
     if (!fs.existsSync(configPath)) {
       const defaultConfig = {
         todoistApiToken: ''
       };
+      // Ensure the directory exists
+      const configDir = path.dirname(configPath);
+      if (!fs.existsSync(configDir)) {
+        fs.mkdirSync(configDir, { recursive: true });
+      }
       fs.writeFileSync(configPath, JSON.stringify(defaultConfig, null, 2));
       config = defaultConfig;
       return;
@@ -416,12 +427,18 @@ ipcMain.handle('get-api-key', () => {
 
 ipcMain.handle('save-api-key', (event, apiKey) => {
   try {
-    const configPath = path.join(__dirname, 'config.json');
+    const configPath = getConfigPath();
 
     // Create config object
     const newConfig = {
       todoistApiToken: apiKey
     };
+
+    // Ensure the directory exists
+    const configDir = path.dirname(configPath);
+    if (!fs.existsSync(configDir)) {
+      fs.mkdirSync(configDir, { recursive: true });
+    }
 
     // Write to file
     fs.writeFileSync(configPath, JSON.stringify(newConfig, null, 2));
