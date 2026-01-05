@@ -159,7 +159,7 @@ function showSettingsWindow() {
 
   settingsWindow = new BrowserWindow({
     width: 400,
-    height: 200,
+    height: 220,
     show: false,
     frame: false,
     alwaysOnTop: true,
@@ -451,6 +451,14 @@ ipcMain.handle('save-api-key', (event, apiKey) => {
     console.error('Failed to save API key:', error);
     return { success: false, error: error.message };
   }
+});
+
+ipcMain.handle('refresh-after-config', () => {
+  // Send refresh signal to main window
+  if (window && window.webContents) {
+    window.webContents.send('refresh-todos');
+  }
+  return { success: true };
 });
 
 ipcMain.handle('resize-window', (event, data) => {

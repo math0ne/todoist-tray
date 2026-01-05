@@ -321,7 +321,8 @@ function setupEventListeners() {
 
     // Set up IPC listener for refresh (silent background sync)
     ipcRenderer.on('refresh-todos', () => {
-        silentSyncFromServer();
+        // Do a full reload to clear any error states
+        loadTodos(false);
     });
 
     // Set up periodic refresh (every 30 seconds)
