@@ -5,7 +5,9 @@
       "WebSearch",
       "Bash(npm start)",
       "WebFetch(domain:developer.todoist.com)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(git tag:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []

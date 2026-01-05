@@ -25,6 +25,12 @@ jobs:
     - name: Install dependencies
       run: npm ci
 
+    - name: Update version from tag
+      run: |
+        $version = "${{ github.ref_name }}" -replace '^v', ''
+        npm version $version --no-git-tag-version --allow-same-version
+      shell: pwsh
+
     - name: Build application
       run: npm run dist
       env:
