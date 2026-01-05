@@ -51,6 +51,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const result = await ipcRenderer.invoke('save-api-key', apiKey);
             if (result.success) {
+                // Trigger refresh in main window
+                await ipcRenderer.invoke('refresh-after-config');
                 window.close();
             } else {
                 alert('Failed to save API key: ' + (result.error || 'Unknown error'));
