@@ -4,19 +4,16 @@ A minimal Windows system tray application for Todoist using Electron. Click the 
 
 ![Screenshot](screenshots/main.png)
 
-
----
-
 ## Development
 
 ```
-#Install dependencies
+# Install dependencies
 npm install
 
-#Run in development
+# Run in development
 npm start
 
-#Build for distribution
+# Build for distribution
 npm run build              # Creates both installer and portable exe
 npm run build-portable     # Creates only portable exe
 npm run build-installer    # Creates only installer
