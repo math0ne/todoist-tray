@@ -1,4 +1,4 @@
-# Minimal Todoist - Windows System Tray App
+# Todoist Windows System Tray App
 
 A minimal Windows system tray application for Todoist using Electron. Click the tray icon to see your latest todos and add new ones quickly.
 
