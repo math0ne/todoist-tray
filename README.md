@@ -4,6 +4,7 @@ A minimal Windows system tray application for Todoist using Electron. Click the 
 
 ![Screenshot](screenshots/main.png)
 
+
 ## Features
 
 - System tray integration with click-to-show popup
