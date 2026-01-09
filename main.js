@@ -82,7 +82,7 @@ function createWindow() {
 }
 
 function createTray() {
-  const iconPath = path.join(__dirname, 'assets', 'check-box-inv.png');
+  const iconPath = path.join(__dirname, 'assets', 'Checkbox_Composite.png');
   tray = new Tray(iconPath);
 
   // Try to set the icon explicitly for better rendering
