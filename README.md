@@ -32,3 +32,7 @@ minimal-todoist/
 │   └── tray-icon.png    # System tray icon
 └── package.json
 ```
+
+## License
+
+MIT License - feel free to use and modify as needed.
