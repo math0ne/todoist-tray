@@ -19,7 +19,7 @@ npm run build-portable     # Creates only portable exe
 npm run build-installer    # Creates only installer
 ```
 
-## File Structure
+## Project  Structure
 
 ```
 minimal-todoist/
