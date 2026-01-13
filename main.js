@@ -88,6 +88,23 @@ function createTray() {
   // Try to set the icon explicitly for better rendering
   tray.setImage(iconPath);
 
+  updateTrayMenu();
+
+  tray.on('click', () => {
+    if (window && windowVisible) {
+      window.hide();
+    } else {
+      showWindow();
+      // Removed manual refresh - using only timed updates
+    }
+  });
+}
+
+function updateTrayMenu() {
+  // Check if app is set to run at startup
+  const loginItemSettings = app.getLoginItemSettings();
+  const isStartupEnabled = loginItemSettings.openAtLogin;
+
   const contextMenu = Menu.buildFromTemplate([
     {
       label: 'Show Todoist',
@@ -101,7 +118,14 @@ function createTray() {
         showSettingsWindow();
       }
     },
-    { type: 'separator' },
+    {
+      label: 'Run at Startup',
+      type: 'checkbox',
+      checked: isStartupEnabled,
+      click: () => {
+        toggleStartup();
+      }
+    },
     {
       label: 'Quit',
       click: () => {
@@ -112,15 +136,18 @@ function createTray() {
 
   tray.setToolTip('Minimal Todoist');
   tray.setContextMenu(contextMenu);
+}
 
-  tray.on('click', () => {
-    if (window && windowVisible) {
-      window.hide();
-    } else {
-      showWindow();
-      // Removed manual refresh - using only timed updates
-    }
+function toggleStartup() {
+  const loginItemSettings = app.getLoginItemSettings();
+  const isCurrentlyEnabled = loginItemSettings.openAtLogin;
+
+  app.setLoginItemSettings({
+    openAtLogin: !isCurrentlyEnabled
   });
+
+  // Update the menu to reflect the new state
+  updateTrayMenu();
 }
 
 function showWindow() {
