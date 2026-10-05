@@ -261,7 +261,7 @@ ipcMain.handle('get-todos', async () => {
 
   try {
     // Get active items and projects
-    const activeResponse = await axios.post('https://api.todoist.com/sync/v9/sync',
+    const activeResponse = await axios.post('https://api.todoist.com/api/v1/sync',
       new URLSearchParams({
         sync_token: '*',
         resource_types: '["items", "projects"]'
@@ -301,23 +301,24 @@ ipcMain.handle('get-todos', async () => {
       });
     }
 
-    // Try to get completed items using the archive endpoint
+    // Try to get completed items from the last 3 days
     try {
-      const completedResponse = await axios.post('https://api.todoist.com/sync/v9/completed/get_all',
-        new URLSearchParams({
+      const threeDaysAgo = new Date();
+      threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+
+      const completedResponse = await axios.get('https://api.todoist.com/api/v1/tasks/completed/by_completion_date', {
+        params: {
+          since: threeDaysAgo.toISOString(),
+          // Pad slightly so tasks completed moments ago are not excluded by clock skew
+          until: new Date(Date.now() + 60 * 1000).toISOString(),
           limit: 15
-        }), {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/x-www-form-urlencoded'
-          }
+        },
+        headers: {
+          'Authorization': `Bearer ${token}`
         }
-      );
+      });
 
       if (completedResponse.data.items) {
-        const threeDaysAgo = new Date();
-        threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
-
         completedResponse.data.items.forEach(item => {
           const completedDate = new Date(item.completed_at);
 
@@ -366,7 +367,7 @@ ipcMain.handle('add-todo', async (event, content) => {
   }
 
   try {
-    const response = await axios.post('https://api.todoist.com/rest/v2/tasks', {
+    const response = await axios.post('https://api.todoist.com/api/v1/tasks', {
       content: content
     }, {
       headers: {
@@ -391,7 +392,7 @@ ipcMain.handle('complete-todo', async (event, taskId) => {
 
   try {
     // Use Sync API to close the item
-    const response = await axios.post('https://api.todoist.com/sync/v9/sync',
+    const response = await axios.post('https://api.todoist.com/api/v1/sync',
       new URLSearchParams({
         commands: JSON.stringify([{
           type: 'item_close',
@@ -423,7 +424,7 @@ ipcMain.handle('reopen-todo', async (event, taskId) => {
 
   try {
     // Use Sync API to reopen the item
-    const response = await axios.post('https://api.todoist.com/sync/v9/sync',
+    const response = await axios.post('https://api.todoist.com/api/v1/sync',
       new URLSearchParams({
         commands: JSON.stringify([{
           type: 'item_uncomplete',
